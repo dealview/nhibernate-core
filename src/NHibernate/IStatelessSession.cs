@@ -94,6 +94,8 @@ namespace NHibernate
 		/// <returns>The identifier of the instance</returns>
 		object Insert(object entity);
 
+		object InsertBulk(object entity);
+
 		/// <summary>Insert a row.</summary>
 		/// <param name="entityName">The name of the entity to be inserted</param>
 		/// <param name="entity">A new transient instance</param>

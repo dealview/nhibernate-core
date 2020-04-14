@@ -3476,14 +3476,26 @@ namespace NHibernate.Persister.Entity
 
 		public object Insert(object[] fields, object obj, ISessionImplementor session)
 		{
+			return Insert(fields, obj, session, false);
+		}
+
+		public object Insert(object[] fields, object obj, ISessionImplementor session, bool bulk)
+		{
 			int span = TableSpan;
-			object id;
+			object id = null;
 
 			if (entityMetamodel.IsDynamicInsert)
 			{
 				// For the case of dynamic-insert="true", we need to generate the INSERT SQL
 				bool[] notNull = GetPropertiesToInsert(fields);
-				id = Insert(fields, notNull, GenerateInsertString(true, notNull), obj, session);
+				if (bulk)
+				{
+					Insert(null, fields, PropertyInsertability, 0, SQLIdentityInsertString, obj, session);
+				}
+				else
+				{
+					id = Insert(fields, notNull, GenerateInsertString(true, notNull), obj, session);
+				}
 				for (int j = 1; j < span; j++)
 				{
 					Insert(id, fields, notNull, j, GenerateInsertString(notNull, j), obj, session);
@@ -3492,7 +3504,14 @@ namespace NHibernate.Persister.Entity
 			else
 			{
 				// For the case of dynamic-insert="false", use the static SQL
-				id = Insert(fields, PropertyInsertability, SQLIdentityInsertString, obj, session);
+				if (bulk)
+				{
+					Insert(null, fields, PropertyInsertability, 0, SQLIdentityInsertString, obj, session);
+				}
+				else
+				{
+					id = Insert(fields, PropertyInsertability, SQLIdentityInsertString, obj, session);
+				}
 				for (int j = 1; j < span; j++)
 				{
 					Insert(id, fields, PropertyInsertability, j, SqlInsertStrings[j], obj, session);

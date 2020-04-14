@@ -362,6 +362,8 @@ namespace NHibernate.Persister.Entity
 		/// </summary>
 		object Insert(object[] fields, object obj, ISessionImplementor session);
 
+
+		object Insert(object[] fields, object obj, ISessionImplementor session, bool bulk);
 		/// <summary>
 		/// Delete a persistent instance
 		/// </summary>

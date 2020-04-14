@@ -447,11 +447,22 @@ namespace NHibernate.Impl
 			return Insert(null, entity);
 		}
 
+		public object InsertBulk(object entity)
+		{
+			return Insert(null, entity, true);
+		}
+
+		public object Insert(string entityName, object entity)
+		{
+			return Insert(entityName, entity, false);
+		}
+
 		/// <summary> Insert a row. </summary>
 		/// <param name="entityName">The entityName for the entity to be inserted </param>
 		/// <param name="entity">a new transient instance </param>
+		/// <param name="bulk"></param>
 		/// <returns> the identifier of the instance </returns>
-		public object Insert(string entityName, object entity)
+		public object Insert(string entityName, object entity, bool bulk = false)
 		{
 			using (BeginProcess())
 			{
@@ -470,7 +481,7 @@ namespace NHibernate.Impl
 				}
 				if (id == IdentifierGeneratorFactory.PostInsertIndicator)
 				{
-					id = persister.Insert(state, entity, this);
+					id = persister.Insert(state, entity, this, bulk);
 				}
 				else
 				{
